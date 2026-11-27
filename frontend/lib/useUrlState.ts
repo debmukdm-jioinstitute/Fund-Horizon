@@ -65,3 +65,16 @@ export function useUrlFlag(key: string, opts: { push?: boolean } = { push: true 
   const [v, set] = useUrlState<string>(key, "", opts);
   return [v === "1", (b) => set(b ? "1" : "")];
 }
+
+/** Zero-based page index kept as ?key=N (1-based in the URL); accepts a number or an updater like useState. */
+export function useUrlPage(key = "pg"): [number, (v: number | ((p: number) => number)) => void] {
+  const [v, set] = useUrlState<string>(key, "1");
+  const n = Math.max(0, (parseInt(v, 10) || 1) - 1);
+  const cur = useRef(n);
+  cur.current = n;
+  const setPage = useCallback(
+    (u: number | ((p: number) => number)) => set(String(Math.max(0, typeof u === "function" ? u(cur.current) : u) + 1)),
+    [set],
+  );
+  return [n, setPage];
+}

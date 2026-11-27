@@ -20,6 +20,7 @@ import {
 } from "@/lib/backoffice-display";
 import { PmsLogo } from "@/components/BrandLogo";
 import PmsMethodologyModal from "@/components/backoffice/PmsMethodologyModal";
+import { useUrlFlag } from "@/lib/useUrlState";
 
 interface PmsStrategyDrawerProps {
   strategy: PmsStrategyItem | null;
@@ -32,7 +33,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
   const [copied, setCopied] = useState(false);
   const [detail, setDetail] = useState<PmsStrategyDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
-  const [methodologyOpen, setMethodologyOpen] = useState(false);
+  const [methodologyOpen, setMethodologyOpen] = useUrlFlag("smethod");
   const rec = useRecommended();
   const [historyView, setHistoryView] = useState<"monthly" | "quarterly" | "yearly">("monthly");
   const [mounted, setMounted] = useState(false);

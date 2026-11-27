@@ -2,7 +2,7 @@
 
 import React, { Suspense, useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useUrlFlag, useUrlId, useUrlState } from "@/lib/useUrlState";
+import { useUrlFlag, useUrlId, useUrlPage, useUrlState } from "@/lib/useUrlState";
 import SectionLauncher, { useFullScreen } from "@/components/backoffice/SectionLauncher";
 import { PmsLogo } from "@/components/BrandLogo";
 import Link from "next/link";
@@ -160,11 +160,11 @@ function PmsTracker() {
   const [search, setSearch] = useState(urlQuery);
   const [sortKey, setSortKey] = useUrlState<SortKey>("sort", "aum");
   const [sortDir, setSortDir] = useUrlState<"asc" | "desc">("dir", "desc", { allowed: ["asc", "desc"] });
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useUrlPage();
   const [docModalOpen, setDocModalOpen] = useUrlFlag("doc");
   const [matrixModalOpen, setMatrixModalOpen] = useUrlFlag("matrix");
   const [selectedBenchmark, setSelectedBenchmark] = useState(params.get("bench") ?? "BSE 500 TRI");
-  const [methodologyModalOpen, setMethodologyModalOpen] = useState(false);
+  const [methodologyModalOpen, setMethodologyModalOpen] = useUrlFlag("method");
   const [methodologyStrategy, setMethodologyStrategy] = useState<PmsStrategyItem | null>(null);
 
   useEffect(() => {
@@ -262,9 +262,11 @@ function PmsTracker() {
     return rows;
   }, [evaluatedStrategies, isRecommended, categoryFilter, deferredSearch, sortKey, sortDir, isStrategyRecommended]);
 
+  const pageInit = React.useRef(true); // first run must keep ?pg= from the link
   useEffect(() => {
+    if (pageInit.current) { pageInit.current = false; return; }
     setPage(0);
-  }, [categoryFilter, search, sortKey, sortDir, isRecommended, selectedBenchmark]);
+  }, [categoryFilter, search, sortKey, sortDir, isRecommended, selectedBenchmark, setPage]);
 
   const pageCount = Math.max(1, Math.ceil(filteredStrategies.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount - 1);

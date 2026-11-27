@@ -25,7 +25,7 @@ import { blankDash, classifyPlanOption, isNavStale } from "@/lib/backoffice-disp
 import { formatISTDate, formatNumber } from "@/lib/terminal-format";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 
-import { useUrlState } from "@/lib/useUrlState";
+import { useUrlPage, useUrlState, useUrlFlag } from "@/lib/useUrlState";
 const TABS = [
   { id: "fund-price", label: "Fund Price" }, { id: "performance", label: "Performance" }, { id: "peers", label: "Peer Comparison" },
   { id: "calculator", label: "Calculator" }, { id: "asset-allocation", label: "Asset Allocation" }, { id: "sector-allocation", label: "Sector Allocation" },
@@ -67,7 +67,7 @@ function NavHistory({ perf, code }: { perf: MfPerformance; code: string }) {
   const [view, setView] = useUrlState<"monthly" | "quarterly" | "yearly">("navview", "monthly", { allowed: ["monthly", "quarterly", "yearly"] });
   const [year, setYear] = useUrlState<string>("navyear", "all");
   const [size, setSize] = useState(DEFAULT_PAGE_SIZE);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useUrlPage();
   const years = useMemo(() => Array.from(new Set(perf.history.map((h) => h.date.slice(0, 4)))), [perf.history]);
   const rows = useMemo(
     () =>
@@ -135,7 +135,7 @@ export default function FundDetailPage({ scheme }: { scheme: MutualFundItem & { 
   const [peers, setPeers] = useState<FundPeers | null>(null);
   const [perf, setPerf] = useState<MfPerformance | null | undefined>(undefined);
   const [manager, setManager] = useState<MfManagerInfo | null>(null);
-  const [managerOpen, setManagerOpen] = useState(false);
+  const [managerOpen, setManagerOpen] = useUrlFlag("mgrinfo");
   const [detail, setDetail] = useState<MfResearchDetail | null>(null);
   const [fh, setFh] = useState<FhExplain | null>(null);
   const [copied, setCopied] = useState(false);

@@ -85,14 +85,14 @@ export default function HrmsPage() {
   const [issuingCard, setIssuingCard] = useState(false);
 
   // Dispatch modal
-  const [dispatchModalOpen, setDispatchModalOpen] = useState(false);
+  const [dispatchModalOpen, setDispatchModalOpen] = useUrlFlag("dispatch");
   const [dispatchingCard, setDispatchingCard] = useState<IdCardRecord | null>(null);
   const [dispatchTrackingNo, setDispatchTrackingNo] = useState<string>("");
   const [dispatchNotes, setDispatchNotes] = useState<string>("");
   const [submittingDispatch, setSubmittingDispatch] = useState(false);
 
   // Preview modal
-  const [previewModalOpen, setPreviewModalOpen] = useState(false);
+  const [previewModalOpen, setPreviewModalOpen] = useUrlFlag("preview");
   const [previewCard, setPreviewCard] = useState<IdCardRecord | null>(null);
   const [previewSide, setPreviewSide] = useState<"front" | "back">("front");
 
@@ -112,7 +112,7 @@ export default function HrmsPage() {
 
   // Attendance states
   const [attDate, setAttDate] = useState<string>(now.toISOString().split("T")[0]);
-  const [leaveModalOpen, setLeaveModalOpen] = useState(false);
+  const [leaveModalOpen, setLeaveModalOpen] = useUrlFlag("leave");
   const [newLeave, setNewLeave] = useState({
     employee_id: "",
     leave_type: "casual",

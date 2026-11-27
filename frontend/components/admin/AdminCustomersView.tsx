@@ -3,6 +3,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
+import { useUrlPage } from "@/lib/useUrlState";
 import {
   AccountRole,
   CustomerRecord,
@@ -39,7 +40,7 @@ function formatDate(iso: string): string {
 export default function AdminCustomersView() {
   const [customers, setCustomers] = useState<CustomerRecord[]>([]);
   const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useUrlPage();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);

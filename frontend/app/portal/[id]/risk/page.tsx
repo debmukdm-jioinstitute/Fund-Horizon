@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { getPortalDashboard, patchPortalPlan, getQuestionnaire, ApiError } from "@/lib/api";
 import type { PortalDashboard, Questionnaire } from "@/lib/types";
+import { useUrlFlag } from "@/lib/useUrlState";
 
 /** Plain-language sentences about equity exposure, keyed loosely to the band name. */
 function bandCopy(band: string): string[] {
@@ -58,7 +59,7 @@ export default function RiskPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [showRetake, setShowRetake] = useState(false);
+  const [showRetake, setShowRetake] = useUrlFlag("retake");
   const [questionnaire, setQuestionnaire] = useState<Questionnaire | null>(null);
   const [qLoading, setQLoading] = useState(false);
   const [qError, setQError] = useState<string | null>(null);

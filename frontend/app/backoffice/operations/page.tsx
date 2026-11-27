@@ -15,7 +15,7 @@ import type { OfficialForm } from "@/lib/officialForms";
 import { startDownload, type DownloadResult } from "@/lib/api";
 import { domain, isReference, JOBS, type Job, jobForms } from "@/lib/operations";
 
-import { useUrlState } from "@/lib/useUrlState";
+import { useUrlState, useUrlFlag } from "@/lib/useUrlState";
 type Tab = "updates" | "tasks" | "library" | "register" | "report" | "review";
 interface Filling { source: PdfSource; prefill?: Partial<ClientDetails>; context?: FillContext }
 interface Filters { q: string; sources: Set<string>; amc: string; cat: string; amcQ: string }
@@ -408,7 +408,7 @@ function RegisterTab({ filings, error, onMove }: { filings: Filing[]; error: str
 export default function OperationsPage() {
   const [view, setView] = useState<"home" | "forms" | "download">("home");
   const [initialTab, setInitialTab] = useState<Tab>("updates");
-  const [showArchives, setShowArchives] = useState(false);
+  const [showArchives, setShowArchives] = useUrlFlag("archives");
 
   useEffect(() => {
     const sync = () => {
@@ -634,7 +634,7 @@ export default function OperationsPage() {
               </span>
               <button
                 type="button"
-                onClick={() => setShowArchives((v) => !v)}
+                onClick={() => setShowArchives(!showArchives)}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] px-3 py-1.5 text-[12.5px] font-semibold text-[#172033] dark:text-[#EDF1F6] hover:border-[#0052CC] hover:text-[#0052CC] transition-colors"
                 aria-expanded={showArchives}
               >

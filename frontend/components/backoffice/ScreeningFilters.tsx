@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { MfScreeningRatioMeta, ScreeningPresetItem } from "@/lib/backoffice";
+import { useUrlFlag } from "@/lib/useUrlState";
 
 export interface ScreeningFiltersState {
   [key: string]: unknown;
@@ -46,7 +47,7 @@ export default function ScreeningFilters({
   onSelectPreset,
   onDeletePreset,
 }: ScreeningFiltersProps) {
-  const [showPresetModal, setShowPresetModal] = useState(false);
+  const [showPresetModal, setShowPresetModal] = useUrlFlag("presets");
   const [newPresetName, setNewPresetName] = useState("");
   const [showRatioSelector, setShowRatioSelector] = useState(false);
 

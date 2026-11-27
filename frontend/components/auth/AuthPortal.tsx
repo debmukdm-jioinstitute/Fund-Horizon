@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
 import { signupCustomer } from "@/lib/api";
+import { useUrlFlag } from "@/lib/useUrlState";
 
 interface AuthPortalProps {
   initialTab?: "customer" | "admin";
@@ -26,7 +27,7 @@ export default function AuthPortal({
   const [submitting, setSubmitting] = useState(false);
 
   // Modals
-  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [showForgotModal, setShowForgotModal] = useUrlFlag("forgot");
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotSubmitted, setForgotSubmitted] = useState(false);
 

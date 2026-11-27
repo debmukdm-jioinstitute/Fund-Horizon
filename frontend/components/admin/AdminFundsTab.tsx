@@ -6,7 +6,7 @@ import Link from "next/link";
 import { AdminSchemeRecord, fetchAdminSchemes } from "@/lib/admin-api";
 import { pct } from "@/lib/format";
 
-import { useUrlState } from "@/lib/useUrlState";
+import { useUrlPage, useUrlState } from "@/lib/useUrlState";
 export default function AdminFundsTab() {
   const [schemes, setSchemes] = useState<AdminSchemeRecord[]>([]);
   const [amcs, setAmcs] = useState<string[]>([]);
@@ -21,7 +21,7 @@ export default function AdminFundsTab() {
   const [selectedPlan, setSelectedPlan] = useUrlState<string>("plan", "");
   const [sortBy, setSortBy] = useUrlState<string>("sort", "scheme_name");
   const [order, setOrder] = useState("asc");
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useUrlPage();
   const limit = 25;
 
   const loadSchemes = React.useCallback(async () => {

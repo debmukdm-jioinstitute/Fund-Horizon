@@ -790,7 +790,7 @@ def enrich_and_compute_matrices(data: dict[str, Any]) -> dict[str, Any]:
     for idx, r in enumerate(rows, 1):
         r.setdefault("asset_class", "Mutual Fund")
         # Classify every row once (mutual fund / PMS / direct equity) from identifiers, wording and the APMI registry.
-        r["asset_class"], prov = classify_row(r, (lambda x: bool(lookups[0]) and pr_api._match_scheme(x.get("name") or "", x.get("isin"), x.get("code"), lookups, idx)[1] in ("exact_code", "exact_isin", "matched_name")))
+        r["asset_class"], prov = classify_row(r, (lambda x, i=idx: bool(lookups[0]) and pr_api._match_scheme(x.get("name") or "", x.get("isin"), x.get("code"), lookups, i)[1] in ("exact_code", "exact_isin", "matched_name")))
         if r["asset_class"] == "PMS":
             r["provider"] = r.get("provider") or prov or ""
             r["category"] = "PMS Strategy"

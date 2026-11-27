@@ -108,9 +108,48 @@ export async function call<T>(path: string, init: RequestInit = {}, blob = false
   return (blob ? res.blob() : res.json()) as Promise<T>;
 }
 
+// Upload with real byte progress (fetch cannot report it). The server read that follows has no progress feed, so its bar is an
+// estimate from file size, calibrated on the user's previous runs (seconds per MB, kept in localStorage).
+type Prog = { phase: "upload" | "read" | "matrix"; loaded: number; total: number; files: number; t0: number; t1: number };
+const SPM_KEY = "fh-parse-seconds-per-mb";
+const readEst = (mb: number) => 3 + mb * (Number(localStorage.getItem(SPM_KEY)) || 5);
+function postParse(fd: FormData, onUp: (loaded: number, total: number) => void, onSent: () => void): Promise<unknown> {
+  return new Promise((ok, fail) => {
+    const x = new XMLHttpRequest();
+    x.open("POST", resolveApiUrl(`${API_URL}/api/backoffice/client-report/parse`));
+    x.withCredentials = true; x.responseType = "json";
+    x.upload.onprogress = (e) => e.lengthComputable && onUp(e.loaded, e.total);
+    x.upload.onload = onSent;
+    x.onload = () => (x.status >= 200 && x.status < 300 ? ok(x.response) : fail(new ApiError(typeof x.response?.detail === "string" ? x.response.detail : `Request failed (${x.status})`, x.status)));
+    x.onerror = () => fail(new ApiError("Could not reach the server. Please try again in a few seconds.", 0));
+    x.send(fd);
+  });
+}
+function ProgressBar({ p }: { p: Prog }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => { const t = setInterval(() => setNow(Date.now()), 250); return () => clearInterval(t); }, []);
+  const mb = p.total / 1048576, el = (now - (p.phase === "upload" ? p.t0 : p.t1)) / 1000, est = readEst(mb);
+  const up = p.total ? p.loaded / p.total : 0;
+  const pct = Math.round(100 * (p.phase === "upload" ? 0.25 * up : p.phase === "read" ? 0.25 + 0.7 * Math.min(0.97, el / est) : 0.97));
+  const left = p.phase === "upload" ? Math.max(1, Math.round((el / Math.max(up, 0.02)) * (1 - up) + est)) : Math.max(0, Math.round(est - el));
+  const what = p.phase === "upload" ? `Uploading ${(p.loaded / 1048576).toFixed(1)} of ${mb.toFixed(1)} MB` : p.phase === "read" ? "Reading the statements and pulling every holding, transaction and NAV" : "Computing XIRR, allocation, benchmarks and risk matrices";
+  return (
+    <div className="mt-3" role="status" aria-live="polite">
+      <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 text-[12.5px]">
+        <span className="font-semibold">{what} · {p.files} file{p.files > 1 ? "s" : ""}</span>
+        <span className="tabular-nums text-[#667085] dark:text-[#9AA3B2]">{pct}% · {left > 1 || p.phase === "upload" ? `about ${left} s left (estimate)` : "almost done"} · {Math.round(el)} s elapsed</span>
+      </div>
+      <div className="h-2 w-full overflow-hidden rounded-full bg-[#E4E9EF] dark:bg-[#2B3644]" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct}>
+        <div className="h-full rounded-full bg-[#006F64] transition-[width] duration-300" style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
+
 export default function ClientReport({ customerId, customerName }: { customerId?: string; customerName?: string }) {
   const [report, setReport] = useState<Report | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const [prog, setProg] = useState<Prog | null>(null);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [warnings, setWarnings] = useState<string[]>([]);
   const [fileResults, setFileResults] = useState<FileRes[]>([]);
@@ -138,14 +177,18 @@ export default function ClientReport({ customerId, customerName }: { customerId?
 
   const run = async (label: string, fn: () => Promise<void>) => {
     setBusy(label); setMsg(null);
-    try { await fn(); } catch (e) { setMsg({ ok: false, text: e instanceof Error ? e.message : "Something went wrong." }); } finally { setBusy(null); }
+    try { await fn(); } catch (e) { setMsg({ ok: false, text: e instanceof Error ? e.message : "Something went wrong." }); } finally { setBusy(null); setProg(null); }
   };
 
   const upload = (files: File[], mergeExisting = false) => files.length && run("parse", async () => {
     const fd = new FormData();
     files.forEach((f) => fd.append("files", f));
     if (password.trim()) fd.append("password", password.trim());
-    const d = await call<Report & { warnings: string[]; file_results?: FileRes[] }>("/parse", { method: "POST", body: fd });
+    const t0 = Date.now();
+    setProg({ phase: "upload", loaded: 0, total: files.reduce((a, f) => a + f.size, 0) || 1, files: files.length, t0, t1: t0 });
+    const d = await postParse(fd, (loaded, total) => setProg((p) => p && { ...p, loaded, total }), () => setProg((p) => p && { ...p, phase: "read", t1: Date.now() })) as Report & { warnings: string[]; file_results?: FileRes[] };
+    const mb = files.reduce((a, f) => a + f.size, 0) / 1048576;
+    setProg((p) => { if (p) localStorage.setItem(SPM_KEY, String(Math.min(30, Math.max(0.5, (Date.now() - p.t1) / 1000 / Math.max(mb, 0.2))))); return p && { ...p, phase: "matrix" }; });
     setWarnings(d.warnings ?? []);
     setFileResults(d.file_results ?? []);
     const needsPass = (d.file_results ?? []).some((f) => f.kind === "password_required");
@@ -368,6 +411,8 @@ export default function ClientReport({ customerId, customerName }: { customerId?
             </button>
           )}
         </div>
+
+        {prog && <ProgressBar p={prog} />}
 
         {fileResults.length > 0 && (
           <div className="mt-2.5 flex flex-wrap gap-1.5">

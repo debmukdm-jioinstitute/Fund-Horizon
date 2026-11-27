@@ -104,6 +104,53 @@ const RULES: Rule[] = [
   { id: "tot", re: /^total$/i, t: "Total", how: "Sum of the rows above.", src: "Calculated from the rows above." },
 ];
 
+// ---- Live workings: the report's own data, so every figure can be re-checked by hand
+export type Work = { open_d: string | null; open_v: number; close_d: string; close_v: number; n: number; invested: number; withdrawn: number; first: string | null; last: string | null; xirr: number };
+export type Ctx = {
+  fy?: { to?: string; since_work?: Record<string, Work>; years?: { fy: string; end: string; value: number | null; new: number | null; new_n?: number | null; work?: Record<string, Work>; gaps?: string[] }[] };
+  rows?: { name: string; folio: string; invested: number; value: number; ann_ret?: number; flows?: [string, number][] }[];
+};
+const dmy = (d: string) => `${d.slice(8, 10)}-${d.slice(5, 7)}-${d.slice(0, 4)}`;
+const inr = (n: number) => `₹${f(n, 0)}`;
+const GROUP: [RegExp, string][] = [[/^mutual/i, "MF"], [/^pms/i, "PMS"], [/^direct/i, "STOCK"], [/^total/i, "PORTFOLIO"]];
+
+function solve(cf: [string, number][]): number | null { // XIRR by bisection: the rate where the dated cash flows add up to zero
+  const t0 = Date.parse(cf[0][0]);
+  const npv = (r: number) => cf.reduce((a, [d, x]) => a + x / Math.pow(1 + r, (Date.parse(d) - t0) / 31536000000), 0);
+  let lo = -0.99, hi = 10;
+  if (npv(lo) * npv(hi) > 0) return null;
+  for (let i = 0; i < 100; i++) { const m = (lo + hi) / 2; if (npv(lo) * npv(m) <= 0) hi = m; else lo = m; }
+  return (lo + hi) / 2;
+}
+function workText(w: Work, label: string): string {
+  const ops = w.open_d ? `opening ${inr(w.open_v)} on ${dmy(w.open_d)}, ` : "";
+  const mid = w.n ? `${w.n} dated transaction${w.n > 1 ? "s" : ""} (${inr(w.invested)} in${w.withdrawn ? `, ${inr(w.withdrawn)} out` : ""}, ${dmy(w.first!)}${w.last !== w.first ? ` to ${dmy(w.last!)}` : ""}), ` : "no dated transactions, ";
+  return `${label}: ${ops}${mid}closing value ${inr(w.close_v)} on ${dmy(w.close_d)}. XIRR is the rate r where every cash flow × (1 + r)^(−years from the first date) adds up to zero. That gives ${f(w.xirr)}%.`;
+}
+function workings(col: Rule, colText: string, row: string | undefined, folio: string | undefined, invested: number | undefined, ctx?: Ctx): string | null {
+  if (!ctx) return null;
+  const fy = ctx.fy, yr = fy?.years?.find((y) => y.fy === row);
+  if (col.id === "fyvalue" && yr?.value != null) return `Sum of (units held on ${dmy(yr.end)} × AMFI NAV on that date) over every holding = ${inr(yr.value)}.`;
+  if (col.id === "fynew" && yr?.new != null) return `${yr.new_n ?? "All"} dated transaction${yr.new_n === 1 ? "" : "s"} in ${row}, purchases minus withdrawals = ${inr(yr.new)}.`;
+  if (col.id !== "xirr" && col.id !== "cls") return null;
+  const g = col.id === "cls" ? colText.toUpperCase() : (GROUP.find(([re]) => re.test(row ?? ""))?.[1] ?? "PORTFOLIO");
+  if (folio && invested != null) { // a holding row: recompute from its own dated transactions
+    const r = ctx.rows?.find((x) => x.folio === folio && Math.abs(x.invested - invested) < 1);
+    const flows = (r?.flows ?? []).filter(([d]) => /^\d{4}-\d{2}-\d{2}/.test(d)).sort((a, b) => a[0].localeCompare(b[0]));
+    const end = fy?.to;
+    if (end) flows.splice(0, flows.length, ...flows.filter(([d]) => d.slice(0, 10) < end)); // flows dated after the valuation date are ignored
+    if (r && flows.length && end) {
+      const x = solve([...flows.map(([d, a]) => [d.slice(0, 10), -a] as [string, number]), [end, r.value]]);
+      const inn = flows.filter(([, a]) => a > 0).reduce((a, [, v]) => a + v, 0), out = flows.filter(([, a]) => a < 0).reduce((a, [, v]) => a - v, 0);
+      return `${flows.length} dated transactions (${inr(inn)} in${out ? `, ${inr(out)} out` : ""}, ${dmy(flows[0][0])} to ${dmy(flows[flows.length - 1][0])}), current value ${inr(r.value)} on ${dmy(end)}. XIRR is the rate r where every cash flow × (1 + r)^(−years from the first date) adds up to zero. That gives ${x == null ? "no solution" : f(x * 100) + "%"}${r.ann_ret != null && x != null && Math.abs(r.ann_ret - x * 100) > 0.05 ? `; the statement prints ${f(r.ann_ret)}%` : ""}.`;
+    }
+    if (r) return `No dated transactions for this holding, so the printed ${r.ann_ret != null ? f(r.ann_ret) + "%" : "figure"} comes from the statement or from invested ${inr(r.invested)} growing to ${inr(r.value)} over the holding period.`;
+  }
+  const w = /^since/i.test(row ?? "") || !yr ? fy?.since_work?.[g] : yr.work?.[g];
+  if (w) return workText(w, /^since/i.test(row ?? "") || !yr ? `Since inception, ${g === "PORTFOLIO" ? "whole portfolio" : g}` : `${row}, ${g === "PORTFOLIO" ? "whole portfolio" : g}`);
+  return yr || /^since/i.test(row ?? "") ? (yr?.gaps?.length ? `Left blank on purpose, nothing is estimated: ${yr.gaps.join("; ")}.` : "Either reported by the provider (†) or not computable from the uploaded dated transactions.") : null;
+}
+
 const num = (s: string) => { const neg = /^\(.*\)$/.test(s.trim()); const n = parseFloat(s.replace(/[₹,%\s()]/g, "")); return Number.isFinite(n) ? (neg ? -Math.abs(n) : n) : null; };
 const match = (s: string) => RULES.find((r) => r.re.test(s.trim()));
 const cx = (b: Box) => b.x + b.w / 2;
@@ -111,26 +158,30 @@ const sameRow = (a: Box, b: Box) => Math.abs(a.y + a.h / 2 - (b.y + b.h / 2)) < 
 
 // nearest column header above `b` whose horizontal span lines up with it
 function header(items: Box[], b: Box): Rule | undefined {
-  let best: { r: Rule; dy: number } | undefined;
+  return headerOf(items, b)?.r;
+}
+function headerOf(items: Box[], b: Box): { r: Rule; it: Box } | undefined {
+  const c: { r: Rule; it: Box; dy: number; dx: number }[] = [];
   for (const it of items) {
     if (it === b || it.y + it.h > b.y + 1) continue;
     const r = match(it.s);
     if (!r?.col || Math.abs(cx(it) - cx(b)) > Math.max(it.w, b.w) / 2 + 14) continue;
-    const dy = b.y - it.y + 3 * Math.abs(cx(it) - cx(b)); // nearest above, but the one centred over the column wins
-    if (!best || dy < best.dy) best = { r, dy };
+    c.push({ r, it, dy: b.y - it.y, dx: Math.abs(cx(it) - cx(b)) });
   }
-  return best?.r;
+  const near = Math.min(...c.map((x) => x.dy)); // the closest header row wins; within it (wrapped header lines), the one centred over the column
+  return c.filter((x) => x.dy <= near + 14).sort((x, y) => x.dx - y.dx)[0];
 }
 
-export function explain(items: Box[], hit: Box): Explained | null {
+export function explain(items: Box[], hit: Box, ctx?: Ctx): Explained | null {
   const own = match(hit.s);
   const row = items.filter((i) => i !== hit && sameRow(i, hit) && i.x < hit.x && /[A-Za-z]/.test(i.s) && !/^[+\-−]?₹?[\d,.]+%?(\s*p\.a\.)?$/.test(i.s)).sort((a, b) => a.x - b.x)[0]?.s;
   if (own && (own.col || !/^[\d.,\-₹%\s()]+$/.test(hit.s))) {
     return { title: own.t, how: own.how, src: own.src, value: hit.s };
   }
   if (!/^[+\-−]?₹?[\d,.]+%?(\s*p\.a\.)?$|^[-–]$|^\d+ schemes/.test(hit.s)) return null; // only values get a column explanation
-  const col = header(items, hit);
+  const hd = headerOf(items, hit), col = hd?.r;
   if (!col) return own ? { title: own.t, how: own.how, src: own.src, value: hit.s } : null;
+  const texts: Record<string, string> = {};
   const rowCells = (at: Box): Cells => {
     const c: Cells = {};
     for (const it of items) {
@@ -138,9 +189,14 @@ export function explain(items: Box[], hit: Box): Explained | null {
       const h = it === hit ? col : header(items, it);
       const n = num(it.s);
       if (h && n != null && c[h.id] == null) c[h.id] = n;
+      if (h && at === hit) texts[h.id] = it.s;
     }
     return c;
   };
   const totalBox = items.find((i) => /^grand total$/i.test(i.s));
-  return { title: col.t, how: col.how, src: col.src, value: hit.s, row, calc: col.calc?.(rowCells(hit), totalBox ? rowCells(totalBox) : {}) ?? undefined };
+  const mine = rowCells(hit);
+  // the folio cell sits left of the numbers: read its text straight from the row
+  const folioItem = items.find((i) => i !== hit && sameRow(i, hit) && header(items, i)?.id === "folio");
+  const live = workings(col, hd!.it.s, row, folioItem?.s, mine.invested, ctx);
+  return { title: col.t, how: col.how, src: col.src, value: hit.s, row, calc: live ?? col.calc?.(mine, totalBox ? rowCells(totalBox) : {}) ?? undefined };
 }

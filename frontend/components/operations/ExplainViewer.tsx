@@ -2,11 +2,11 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import type { PDFDocumentProxy } from "pdfjs-dist";
-import { explain, type Box, type Explained } from "@/lib/report-methods";
+import { explain, type Box, type Ctx, type Explained } from "@/lib/report-methods";
 
 type Tip = { e: Explained; x: number; y: number };
 
-function Page({ doc, n, width, onTip }: { doc: PDFDocumentProxy; n: number; width: number; onTip: (t: Tip | null) => void }) {
+function Page({ doc, n, width, onTip, ctx }: { doc: PDFDocumentProxy; n: number; width: number; onTip: (t: Tip | null) => void; ctx?: Ctx }) {
   const wrap = useRef<HTMLDivElement>(null);
   const cv = useRef<HTMLCanvasElement>(null);
   const items = useRef<Box[]>([]);
@@ -46,7 +46,7 @@ function Page({ doc, n, width, onTip }: { doc: PDFDocumentProxy; n: number; widt
     const r = wrap.current!.getBoundingClientRect();
     const px = e.clientX - r.left, py = e.clientY - r.top;
     const hit = items.current.find((b) => px >= b.x - 2 && px <= b.x + b.w + 2 && py >= b.y - 2 && py <= b.y + b.h + 2);
-    const ex = hit && explain(items.current, hit);
+    const ex = hit && explain(items.current, hit, ctx);
     setHl(ex ? hit! : null);
     onTip(ex ? { e: ex, x: e.clientX, y: e.clientY } : null);
   };
@@ -60,7 +60,7 @@ function Page({ doc, n, width, onTip }: { doc: PDFDocumentProxy; n: number; widt
 }
 
 // Takes the PDF Blob itself: fetch() on a blob: URL is refused by the site's connect-src policy ("Failed to fetch").
-export default function ExplainViewer({ blob, id }: { blob: Blob; id: string }) {
+export default function ExplainViewer({ blob, id, ctx }: { blob: Blob; id: string; ctx?: Ctx }) {
   const box = useRef<HTMLDivElement>(null);
   const [doc, setDoc] = useState<PDFDocumentProxy | null>(null);
   const [width, setWidth] = useState(0);
@@ -95,7 +95,7 @@ export default function ExplainViewer({ blob, id }: { blob: Blob; id: string }) 
   return (
     <div ref={box} className="h-[78vh] w-full overflow-auto rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-[#EEF1F5] dark:bg-[#0F151F] p-2">
       {err && <p role="alert" className="text-[12.5px] text-[#B42318]">{err}</p>}
-      {doc && width > 0 && Array.from({ length: doc.numPages }, (_, i) => <Page key={`${id}-${i}`} doc={doc} n={i + 1} width={width} onTip={setTip} />)}
+      {doc && width > 0 && Array.from({ length: doc.numPages }, (_, i) => <Page key={`${id}-${i}`} doc={doc} n={i + 1} width={width} onTip={setTip} ctx={ctx} />)}
       {!doc && !err && <p className="text-[13px]">Opening the report…</p>}
       {tip && (
         <div role="tooltip" className="pointer-events-none fixed z-50 rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] p-3 text-[12.5px] leading-snug shadow-xl" style={{ left, top, width: W }}>

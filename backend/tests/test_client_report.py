@@ -609,6 +609,8 @@ def test_pms_row_gets_class_irr_and_fy_cells(monkeypatch):
     assert (pms["asset_class"], mf["asset_class"]) == ("PMS", "Mutual Fund")
     assert 10.9 < pms["ann_ret"] < 11.0, pms["ann_ret"]  # 1.8x over 5.66 years = 10.95% a year
     assert d["matrices"]["fy"]["since"]["PMS"] is not None
+    w = d["matrices"]["fy"]["since_work"]["PMS"]  # the inputs behind the hover workings
+    assert (w["invested"], w["n"], w["first"], w["close_v"]) == (1_000_000, 1, "2021-03-31", 1_800_000) and abs(w["xirr"] - pms["ann_ret"]) < 0.05
     assert any("Stallion" in w for w in d["warnings"])
     from pypdf import PdfReader
 

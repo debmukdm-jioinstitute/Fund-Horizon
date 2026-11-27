@@ -97,12 +97,17 @@ def _compute(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
         vals = [value_at(p, d) for p in ps if key(p)]
         return None if any(v is None for v in vals) else sum(vals)
 
+    info: dict[str, Any] = {}  # the inputs of the XIRR just computed: shown on hover so every figure can be checked by hand
+
     def xirr(ps: list[dict[str, Any]], a: str | None, b: str) -> float | None:
+        info.clear()
         cf = [(d, -x) for p in ps for d, x in p["fl"] if (a is None or d > a) and d <= b]
         op = agg(ps, a) if a else 0.0
         cl_v = agg(ps, b)
         if op is None or cl_v is None:
             return None
+        info.update(open_d=a if op > 0 else None, open_v=round(op), close_d=b, close_v=round(cl_v), n=len(cf), invested=round(sum(-x for _, x in cf if x < 0)),
+                    withdrawn=round(sum(x for _, x in cf if x > 0)), first=min((d for d, _ in cf), default=None), last=max((d for d, _ in cf), default=None))
         if op > 0:
             cf.append((a, -op))
         res = calculate_xirr(cf, terminal_value=cl_v, terminal_date=b)
@@ -120,7 +125,12 @@ def _compute(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
         ok = covered(pos, end)
         v = agg(pos, end)
         new = round(sum(x for p in pos for d, x in p["fl"] if (first or d > beg) and d <= end), 2) if ok else None
-        x_by = {g: (xirr(ps, None if first else beg, end) if ps and covered(ps, end) and any(p["start"] and p["start"] <= end for p in ps) else None) for g, ps in groups.items()}
+        x_by: dict[str, float | None] = {}
+        wk: dict[str, Any] = {}
+        for g, ps in groups.items():
+            x_by[g] = xirr(ps, None if first else beg, end) if ps and covered(ps, end) and any(p["start"] and p["start"] <= end for p in ps) else None
+            if x_by[g] is not None and info:
+                wk[g] = {**info, "xirr": x_by[g]}
         alloc = None
         if v:
             tot = {b: agg(pos, end, lambda p, b=b: p["bkt"] == b) for b in ("DEBT", "EQUITY", "OTHER")}
@@ -134,10 +144,19 @@ def _compute(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
             gaps.append(f"new investments / XIRR: no dated transactions for {names([p for p in pos if not (p['fl'] or (p['start'] and p['start'] > end))])}")
         elif x_by["PORTFOLIO"] is None and not first and agg(pos, beg) is None:
             gaps.append(f"XIRR: no value at the previous 31 Mar for {names([p for p in pos if value_at(p, beg) is None])}")
-        years.append({"fy": f"FY {y}-{str(y + 1)[2:]}", "end": end, "value": None if v is None else round(v), "new": None if new is None else round(new), "xirr": x_by, "alloc": alloc, "gaps": gaps})
+        years.append({"fy": f"FY {y}-{str(y + 1)[2:]}", "end": end, "value": None if v is None else round(v), "new": None if new is None else round(new), "xirr": x_by, "alloc": alloc, "gaps": gaps, "work": wk,
+                      "new_n": sum(1 for p in pos for d, _ in p["fl"] if (first or d > beg) and d <= end)})
+    since_work: dict[str, Any] = {}
+    since: dict[str, Any] = {"PORTFOLIO": data.get("xirr")}
+    for g, ps in groups.items():
+        v = xirr(ps, None, val_iso) if ps and covered(ps, val_iso) else None
+        if v is not None and info:
+            since_work[g] = {**info, "xirr": v}
+        if g != "PORTFOLIO":
+            since[g] = v
     return {
         "inception": inc, "from": inc, "to": val_iso, "years": years, "exact": exact,
-        "since": {"PORTFOLIO": data.get("xirr"), **{g: xirr(ps, None, val_iso) if ps and covered(ps, val_iso) else None for g, ps in groups.items() if g != "PORTFOLIO"}},
+        "since": since, "since_work": since_work,
         "net_new": None if any(y["new"] is None for y in years) else sum(y["new"] for y in years),
         "classes": [c for c in CLASSES if groups[c]],
     }
@@ -183,7 +202,8 @@ def fy_matrix(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
         if new is None and d.get("new") is not None:
             new = d["new"]; rep.append("new")
         gaps = [g for g in (c or {}).get("gaps", []) if not (("value at" in g and val is not None) or ("XIRR" in g and xr.get("PORTFOLIO") is not None))]  # a provider-reported cell closes its gap
-        years.append({"fy": f"FY {k}", "end": end, "value": val, "new": new, "xirr": xr, "alloc": al, "rep": rep, "gaps": gaps})
+        years.append({"fy": f"FY {k}", "end": end, "value": val, "new": new, "xirr": xr, "alloc": al, "rep": rep, "gaps": gaps,
+                      "work": (c or {}).get("work", {}), "new_n": (c or {}).get("new_n")})
     since_d = dash.get("since") or {}
     since = {"PORTFOLIO": data.get("xirr") if data.get("xirr") is not None else since_d.get("portfolio")}
     srep = []
@@ -199,7 +219,7 @@ def fy_matrix(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
     news = [y["new"] for y in years]
     return {
         "inception": inc, "from": (comp or {}).get("from") or dash.get("from") or inc, "to": (comp or {}).get("to") or dash.get("to") or "",
-        "years": years, "exact": (comp or {}).get("exact", True), "since": since, "since_rep": srep,
+        "years": years, "exact": (comp or {}).get("exact", True), "since": since, "since_rep": srep, "since_work": (comp or {}).get("since_work", {}),
         "net_new": sum(news) if news and all(n is not None for n in news) else dash.get("net_investment"),
         "classes": (comp or {}).get("classes", []), "header": hdr,
         "reported": any(y["rep"] for y in years) or bool(srep),

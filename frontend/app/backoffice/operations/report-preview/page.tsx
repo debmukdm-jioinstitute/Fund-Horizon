@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { PREVIEW_KEY, call } from "@/components/operations/ClientReport";
 import ExplainViewer from "@/components/operations/ExplainViewer";
+import type { Ctx } from "@/lib/report-methods";
 
 // Keys match SECTION_KEYS in backend/app/report/client_report.py; the PDF prints the ticked ones in the order shown here.
 const SECTIONS: [string, string][] = [
@@ -234,7 +235,7 @@ export default function ReportPreview() {
                 </button>
                 <span className="text-[11.5px] text-[#667085] dark:text-[#9AA3B2]">{explainOn ? "Point at or tap any box to see how it is calculated." : "Turn on, then point at any box in the report."}</span>
               </div>
-              {explainOn ? pdf && <ExplainViewer blob={pdf} id={url} /> : <iframe key={url} title="Consolidated PDF preview" src={url} className="h-[78vh] w-full rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-white" />}
+              {explainOn ? pdf && <ExplainViewer blob={pdf} id={url} ctx={{ fy: (report.matrices as { fy?: Ctx["fy"] } | undefined)?.fy, rows: report.rows as Ctx["rows"] }} /> : <iframe key={url} title="Consolidated PDF preview" src={url} className="h-[78vh] w-full rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-white" />}
               <p className="mt-1 text-[11.5px] text-[#667085] dark:text-[#9AA3B2]">Phone or tablet not showing every page? <a className="underline" href={url} target="_blank" rel="noreferrer">Open the full PDF</a>.</p>
             </>
           ) : <p className="text-[13px]">Building preview…</p>}

@@ -10,8 +10,8 @@ import html
 import io
 import math
 import re
-import time
 import threading
+import time
 import zipfile
 from datetime import date, datetime, timedelta
 from functools import lru_cache
@@ -631,6 +631,7 @@ def build_report_charts(data: dict[str, Any]) -> dict[str, str]:
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
         from matplotlib.ticker import FuncFormatter
+
         import app.report.fonts  # noqa: F401
         from app.report.fmt import short_inr
     except Exception:
@@ -1794,8 +1795,8 @@ def build_client_report(data: dict[str, Any]) -> bytes:
     from reportlab.lib.pagesizes import A4, landscape
     from reportlab.lib.styles import ParagraphStyle
     from reportlab.lib.units import mm
-    from reportlab.platypus import Image as RLImage
     from reportlab.platypus import CondPageBreak, KeepTogether, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+    from reportlab.platypus import Image as RLImage
 
     if "matrices" not in data:
         enrich_and_compute_matrices(data)
@@ -2100,7 +2101,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         hbox.setStyle(TableStyle(base + [("BACKGROUND", (0, 0), (0, -1), taupe)]))
         sm = [[P("Since Inception", bold), P(""), P(""), P(pct(fy["since"].get("PORTFOLIO")), center_b)]] + [
             [P(y["fy"], bold), P(num(y["value"]) + mk(y, "value"), center), P(num(y["new"]) + mk(y, "new"), center), P(pct(y["xirr"]["PORTFOLIO"]) + mk(y, "xirr.PORTFOLIO"), center)] for y in yrs]
-        sm_blk = fy_tbl("SUMMARY :", ["Financial Year", f"Value As on 31/03", "New Investments", "XIRR"], sm, [77, 80, 80, 40],
+        sm_blk = fy_tbl("SUMMARY :", ["Financial Year", "Value As on 31/03", "New Investments", "XIRR"], sm, [77, 80, 80, 40],
                         total=[P("Net Investment:", bold), P(""), P(num(fy["net_new"]), center_b), P("")])
         cls = ["PORTFOLIO", "MF", "PMS", "STOCK"]
         lbl = {"PORTFOLIO": "Portfolio", "MF": "MF", "PMS": "PMS", "STOCK": "STOCK"}

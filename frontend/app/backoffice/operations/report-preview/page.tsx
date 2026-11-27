@@ -45,7 +45,14 @@ export default function ReportPreview() {
   const [explainOn, setExplainOn] = useState(false); // hover-to-explain viewer instead of the browser PDF viewer
   const [fmt, setFmt] = useState<Fmt>(FMT0);
   const [past, setPast] = useState<Fmt[]>([]); // undo stack of layout / removed lines / text edits
-  const change = (fn: (f: Fmt) => Fmt) => { setPast((p) => [...p.slice(-49), fmt]); setFmt(fn(fmt)); };
+  const lastEdit = useRef({ key: "", at: 0 });
+  // key: typing in one field is one undo step (edits made within 1.5 s of each other in the same field are merged)
+  const change = (fn: (f: Fmt) => Fmt, key = "") => {
+    const now = Date.now(), same = key && lastEdit.current.key === key && now - lastEdit.current.at < 1500;
+    lastEdit.current = { key, at: now };
+    if (!same) setPast((p) => [...p.slice(-49), fmt]);
+    setFmt(fn(fmt));
+  };
   const undo = () => { const prev = past[past.length - 1]; if (!prev) return; setPast(past.slice(0, -1)); setFmt(prev); };
 
   useEffect(() => {
@@ -183,7 +190,7 @@ export default function ReportPreview() {
           <div className="grid grid-cols-4 gap-2">
             {(Object.keys(MARGIN_LABEL) as (keyof Fmt["margins"])[]).map((k) => (
               <label key={k} className="text-[11.5px]">{MARGIN_LABEL[k]} margin (mm)
-                <input type="number" min={5} max={30} className={field} value={fmt.margins[k]} onChange={(e) => change((f) => ({ ...f, margins: { ...f.margins, [k]: num(e.target.value, 5, 30) } }))} />
+                <input type="number" min={5} max={30} className={field} value={fmt.margins[k]} onChange={(e) => change((f) => ({ ...f, margins: { ...f.margins, [k]: num(e.target.value, 5, 30) } }), `m${k}`)} />
               </label>
             ))}
           </div>
@@ -194,7 +201,7 @@ export default function ReportPreview() {
               </select>
             </label>
             <label className="text-[11.5px]">Heading indent (mm)
-              <input type="number" min={0} max={20} className={field} value={fmt.indent_mm} onChange={(e) => change((f) => ({ ...f, indent_mm: num(e.target.value, 0, 20) }))} />
+              <input type="number" min={0} max={20} className={field} value={fmt.indent_mm} onChange={(e) => change((f) => ({ ...f, indent_mm: num(e.target.value, 0, 20) }), "indent")} />
             </label>
           </div>
           <button type="button" className={`${btn} mt-2`} onClick={() => change(() => FMT0)}>Reset layout and edits</button>
@@ -207,8 +214,8 @@ export default function ReportPreview() {
           <p className="mb-1 mt-2 text-[11.5px] text-[#667085] dark:text-[#9AA3B2]">Change any wording in the report: type the text as printed, then the new text. It is replaced everywhere it appears.</p>
           {fmt.edits.map(([a, b], i) => (
             <div key={i} className="mb-1.5 flex items-center gap-1.5">
-              <input aria-label="Text to find" placeholder="Printed text" className={field} value={a} onChange={(e) => change((f) => ({ ...f, edits: f.edits.map((x, j) => (j === i ? [e.target.value, x[1]] : x)) }))} />
-              <input aria-label="Replace with" placeholder="New text" className={field} value={b} onChange={(e) => change((f) => ({ ...f, edits: f.edits.map((x, j) => (j === i ? [x[0], e.target.value] : x)) }))} />
+              <input aria-label="Text to find" placeholder="Printed text" className={field} value={a} onChange={(e) => change((f) => ({ ...f, edits: f.edits.map((x, j) => (j === i ? [e.target.value, x[1]] : x)) }), `ef${i}`)} />
+              <input aria-label="Replace with" placeholder="New text" className={field} value={b} onChange={(e) => change((f) => ({ ...f, edits: f.edits.map((x, j) => (j === i ? [x[0], e.target.value] : x)) }), `er${i}`)} />
               <button type="button" aria-label="Remove this edit" className="px-1 font-bold" onClick={() => change((f) => ({ ...f, edits: f.edits.filter((_, j) => j !== i) }))}>✕</button>
             </div>
           ))}

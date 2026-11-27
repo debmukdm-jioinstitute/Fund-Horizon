@@ -22,6 +22,7 @@ from zoneinfo import ZoneInfo
 from reportlab import rl_config
 
 from app.config.disclosures import ARN, DISCLOSURE_LINES, FIRM
+from app.report.classify import classify_row
 from app.report.fmt import xml_escape
 from app.report.fonts import BODY_FONT, BOLD_FONT
 
@@ -788,6 +789,11 @@ def enrich_and_compute_matrices(data: dict[str, Any]) -> dict[str, Any]:
 
     for idx, r in enumerate(rows, 1):
         r.setdefault("asset_class", "Mutual Fund")
+        # Classify every row once (mutual fund / PMS / direct equity) from identifiers, wording and the APMI registry.
+        r["asset_class"], prov = classify_row(r, (lambda x: bool(lookups[0]) and pr_api._match_scheme(x.get("name") or "", x.get("isin"), x.get("code"), lookups, idx)[1] in ("exact_code", "exact_isin", "matched_name")))
+        if r["asset_class"] == "PMS":
+            r["provider"] = r.get("provider") or prov or ""
+            r["category"] = "PMS Strategy"
         r.setdefault("category", "")
         r.setdefault("isin", None)
         r.setdefault("code", None)
@@ -822,6 +828,15 @@ def enrich_and_compute_matrices(data: dict[str, Any]) -> dict[str, Any]:
         inv = float(r.get("invested") or 0.0)
         val = float(r.get("value") or 0.0)
         r["abs_ret"] = round((val / inv - 1) * 100, 2) if inv > 0 else 0.0
+
+        # A PMS line that only states a start date and a contribution (no withdrawals) is one dated contribution: that makes its
+        # XIRR and year-by-year cells computable. The assumption is stated in the report warnings.
+        f0 = _iso_date(r.get("from_date"))
+        if r["asset_class"] == "PMS" and not r.get("flows") and f0 and inv > 0 and not float(r.get("div_payout") or 0) and f0 < val_iso:
+            r["flows"] = [[f0, inv]]
+            msg = f"{r['name']}: the statement gives one start date and no withdrawals, so its XIRR assumes a single contribution on {f0}."
+            if msg not in data.setdefault("warnings", []):
+                data["warnings"].append(msg)
 
         # Resolve per-row cash flows and XIRR / implied timeframe
         raw_fl = [( _iso_date(str(d)) or str(d), float(a) ) for d, a in (r.get("flows") or []) if d and a]

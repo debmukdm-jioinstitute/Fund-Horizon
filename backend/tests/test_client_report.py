@@ -577,3 +577,39 @@ def test_layout_edits_margins_and_hidden_fy_rows(monkeypatch):
     if yrs:
         d["layout"] = {"hidden_rows": [yrs[0]]}
         assert txt().count(yrs[0]) < base.count(yrs[0])
+
+
+REG = (("Stallion Asset Pvt Ltd", ("stallion",)), ("Stallion Asset Pvt Ltd", ("stallion", "core")), ("Motilal Oswal Asset Management", ("motilal", "oswal")), ("ASK Investment Managers", ("ask",)))
+
+
+def test_classify_row_pms_vs_mutual_fund_vs_equity(monkeypatch):
+    from app.report import classify
+
+    monkeypatch.setattr(classify, "_registry", lambda: REG)
+    cl = lambda **k: classify.classify_row(k)[0]  # noqa: E731
+    assert cl(name="Stallion Asset Core Portfolio") == "PMS"
+    assert cl(name="Motilal Oswal Midcap Strategy PMS") == "PMS"
+    assert cl(name="Motilal Oswal ELSS Tax Saver Fund-Reg(G)") == "Mutual Fund"  # MF wording beats a provider-name match
+    assert cl(name="Whatever", isin="INF846K01DP8") == "Mutual Fund" and cl(name="Infosys Ltd", isin="INE009A01021") == "Direct Equity"
+    assert cl(name="Some Fund", asset_class="PMS") == "PMS"
+
+
+def test_pms_row_gets_class_irr_and_fy_cells(monkeypatch):
+    from app.report import classify
+    from app.report.client_report import _make_row
+
+    _mock_fh(monkeypatch)
+    monkeypatch.setattr(classify, "_registry", lambda: REG)
+    d = {"client": {"name": "T", "date": "27 Nov 2026"}, "rows": [
+        _make_row(name="Stallion Asset Core Portfolio", folio="PMS1", invested=1_000_000.0, units=1.0, nav=1_800_000.0, value=1_800_000.0, from_date="2021-03-31"),
+        _make_row(name="Motilal Oswal ELSS Tax Saver Fund-Reg(G)", folio="9", invested=100000.0, units=10.0, nav=15000.0, value=150000.0, from_date="2020-03-31"),
+    ]}
+    enrich_and_compute_matrices(d)
+    pms, mf = d["rows"]
+    assert (pms["asset_class"], mf["asset_class"]) == ("PMS", "Mutual Fund")
+    assert 10.9 < pms["ann_ret"] < 11.0, pms["ann_ret"]  # 1.8x over 5.66 years = 10.95% a year
+    assert d["matrices"]["fy"]["since"]["PMS"] is not None
+    assert any("Stallion" in w for w in d["warnings"])
+    from pypdf import PdfReader
+
+    assert "Stallion" in "\n".join(p.extract_text() or "" for p in PdfReader(io.BytesIO(build_client_report(d))).pages)

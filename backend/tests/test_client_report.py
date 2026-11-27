@@ -558,3 +558,22 @@ def test_no_blank_page_for_any_section_or_order(monkeypatch):
         for i, p in enumerate(PdfReader(io.BytesIO(build_client_report({**d, "sections": secs}))).pages, 1):
             body = [ln for ln in (p.extract_text() or "").splitlines() if "Confidential Consolidated Client Report" not in ln and "| Page " not in ln]
             assert "".join(body).strip() or len(p.images), f"blank page {i} for sections {secs}"
+
+
+def test_layout_edits_margins_and_hidden_fy_rows(monkeypatch):
+    from pypdf import PdfReader
+
+    _mock_fh(monkeypatch)
+    text = "Portfolio Valuation Report - Folio Wise   Fund Horizon\nA B Test   ARN: 345439  |  Phone: 9920406408\n23 Oct 2026\n1   " + ROWS + \
+        "Grand Total   3,52,103.35   3,52,103.35   0.00   0.00   7,97,440.90   100.00%   126.48%   14.31%\n"
+    monkeypatch.setattr("app.report.client_report.extract_text", lambda n, b: text)
+    d = parse_files([("s.pdf", b"")])
+    txt = lambda: "\n".join(p.extract_text() or "" for p in PdfReader(io.BytesIO(build_client_report(d))).pages)  # noqa: E731
+    base = txt()
+    d["layout"] = {"edits": {"Grand Total": "Portfolio Total"}, "margins_mm": {"left": 25, "right": 25}, "font_scale": 1.2, "indent_mm": 5, "hide_empty": True}
+    out = txt()  # 25 mm margins: wide tables must shrink to fit, not raise
+    assert "Portfolio Total" in out and "Grand Total" not in out and base
+    yrs = [y["fy"] for y in ((d["matrices"].get("fy") or {}).get("years") or [])]
+    if yrs:
+        d["layout"] = {"hidden_rows": [yrs[0]]}
+        assert txt().count(yrs[0]) < base.count(yrs[0])

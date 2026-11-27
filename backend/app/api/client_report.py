@@ -85,6 +85,22 @@ class Factsheet(BaseModel):
     items: list[FactItem] = Field(max_length=50)
 
 
+class Margins(BaseModel):
+    left: float = Field(default=10, ge=5, le=30)
+    right: float = Field(default=10, ge=5, le=30)
+    top: float = Field(default=10, ge=5, le=30)
+    bottom: float = Field(default=13, ge=8, le=30)
+
+
+class Layout(BaseModel):
+    margins_mm: Margins = Field(default_factory=Margins)
+    font_scale: float = Field(default=1, ge=0.8, le=1.3)
+    indent_mm: float = Field(default=0, ge=0, le=20)  # left indent of section headings and notes
+    hide_empty: bool = False  # drop FY rows whose every cell is "-"
+    hidden_rows: list[str] = Field(default_factory=list, max_length=200)  # FY row labels the user removed ("FY 1998-99")
+    edits: dict[str, str] = Field(default_factory=dict, max_length=100)  # find -> replace, applied to every generated text
+
+
 class Report(BaseModel):
     client: Client
     xirr: float | None = None
@@ -95,6 +111,7 @@ class Report(BaseModel):
     attach_statements: bool = True
     sections: list[str] | None = None  # None = default sections; else only these keys, rendered in this order (see build_client_report)
     txn_years: list[str] | None = Field(default=None, max_length=80)  # FY labels ("2024-25") shown in the transaction report; None = all years
+    layout: Layout | None = None
     dashboard: dict[str, Any] | None = None  # provider FY dashboard read from an upload (PMS / stock / whole-portfolio history)
 
 

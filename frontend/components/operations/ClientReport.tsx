@@ -261,8 +261,50 @@ export default function ClientReport({ customerId, customerName }: { customerId?
       >
         <h2 className="text-lg font-bold">Client report — monthly portfolio valuation</h2>
         <p className="mt-1 text-[13.5px] text-[#667085] dark:text-[#9AA3B2]">
-          Upload any statement — CAMS / KFintech / NSDL / CDSL CAS, FundsIndia Folio-Wise or Transaction-Wise valuation, ProAffluence MF Summary or Transaction Report, PMS statement/factsheet, Direct Equity, Excel (.xlsx/.xls), CSV, Word, or scanned image (OCR). Fund Horizon calculates the exact XIRR, investment timeframe, asset &amp; category allocation, 4-index Nifty benchmark matrix, capture ratios, drawdowns and stress tests, and generates a Fund Horizon branded consolidated report.
+          Upload a statement. Fund Horizon turns it into one branded client report.
         </p>
+        <div className="mt-3 grid gap-3 md:grid-cols-2">
+          {[
+            {
+              title: "What you can upload",
+              items: [
+                "CAS from CAMS, KFintech, NSDL or CDSL",
+                "FundsIndia folio-wise or transaction-wise valuation",
+                "ProAffluence mutual fund summary or transaction report",
+                "PMS statements and factsheets",
+                "Direct equity holdings",
+                "Excel, CSV, Word, or scanned images (read with OCR)",
+              ],
+            },
+            {
+              title: "What you get",
+              items: [
+                "Exact XIRR and investment timeframe",
+                "Asset and category allocation",
+                "Comparison with four Nifty indices",
+                "Capture ratios, drawdowns and stress tests",
+                "One consolidated Fund Horizon report",
+              ],
+            },
+          ].map((col) => (
+            <div
+              key={col.title}
+              className="rounded-xl border border-[#E4E9EF] dark:border-[#2A3340] bg-[#F8FAFC] dark:bg-[#161C26] p-4"
+            >
+              <h3 className="text-[11.5px] font-bold uppercase tracking-[0.08em] text-[#006F64] dark:text-[#75E1CE]">
+                {col.title}
+              </h3>
+              <ul className="mt-2 space-y-1.5">
+                {col.items.map((t) => (
+                  <li key={t} className="flex gap-2 text-[13.5px] leading-snug text-[#344054] dark:text-[#C7CEDA]">
+                    <span aria-hidden className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#006F64] dark:bg-[#75E1CE]" />
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2.5">
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border-[1.5px] border-dashed border-[#006F64] bg-[#F4FBF9] dark:bg-[#112220] px-3.5 py-2 text-[13.5px] font-bold text-[#006F64] dark:text-[#75E1CE] hover:bg-[#E6F4F1]">

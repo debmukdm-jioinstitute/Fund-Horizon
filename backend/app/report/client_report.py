@@ -1795,17 +1795,29 @@ def build_client_report(data: dict[str, Any]) -> bytes:
     ink = colors.HexColor("#1B2333")
     muted = colors.HexColor("#5B6577")
 
-    body = ParagraphStyle("cr", fontName=BODY_FONT, fontSize=7.2, leading=9.2, textColor=ink)
+    lay = data.get("layout") or {}
+    fs = float(lay.get("font_scale") or 1)  # whole-report text size
+    mg = {k: float(v) for k, v in (lay.get("margins_mm") or {}).items()}
+    indent = float(lay.get("indent_mm") or 0) * mm
+    hidden_rows = {str(x).strip() for x in lay.get("hidden_rows") or []}
+    edits = [(str(a), str(b)) for a, b in (lay.get("edits") or {}).items() if a]
+    body = ParagraphStyle("cr", fontName=BODY_FONT, fontSize=7.2 * fs, leading=9.2 * fs, textColor=ink)
     bold = ParagraphStyle("crb", parent=body, fontName=BOLD_FONT)
     center = ParagraphStyle("crc", parent=body, alignment=1)
     center_b = ParagraphStyle("crcb", parent=center, fontName=BOLD_FONT)
     right = ParagraphStyle("crr", parent=body, alignment=2)
     right_b = ParagraphStyle("crrb", parent=right, fontName=BOLD_FONT)
-    head = ParagraphStyle("crh", parent=bold, alignment=1, fontSize=6.6, leading=8.4, textColor=colors.white)
+    head = ParagraphStyle("crh", parent=bold, alignment=1, fontSize=6.6 * fs, leading=8.4 * fs, textColor=colors.white)
     head_l = ParagraphStyle("crhl", parent=head, alignment=0)
-    sec_h = ParagraphStyle("crsh", parent=bold, fontSize=10.5, leading=14, textColor=navy, spaceBefore=6, spaceAfter=3, keepWithNext=1)
-    small = ParagraphStyle("crs", parent=body, fontSize=6.5, leading=8.5, textColor=muted)
-    P = lambda s, st=body: Paragraph(xml_escape(str(s if s is not None else "")), st)  # noqa: E731
+    sec_h = ParagraphStyle("crsh", parent=bold, fontSize=10.5 * fs, leading=14 * fs, textColor=navy, spaceBefore=6, spaceAfter=3, keepWithNext=1, leftIndent=indent)
+    small = ParagraphStyle("crs", parent=body, fontSize=6.5 * fs, leading=8.5 * fs, textColor=muted, leftIndent=indent)
+
+    def _edit(txt: str) -> str:  # user find/replace edits, applied to every generated text
+        for a, b in edits:
+            txt = txt.replace(a, b)
+        return txt
+
+    P = lambda s, st=body: Paragraph(xml_escape(_edit(str(s if s is not None else ""))), st)  # noqa: E731
 
     # Official Fund Horizon Logo
     logo = None
@@ -2050,6 +2062,9 @@ def build_client_report(data: dict[str, Any]) -> bytes:
                 ("LEFTPADDING", (0, 0), (-1, -1), 6), ("RIGHTPADDING", (0, 0), (-1, -1), 6)]
 
         def fy_tbl(title, hdr, body_rows, widths, since=True, total=None):
+            # drop rows the user removed, and (optionally) rows with no data at all: label + only "-" cells
+            gone = lambda r: r[0].getPlainText().strip() in hidden_rows or (lay.get("hide_empty") and all(x.getPlainText().strip() in ("", "-") for x in r[1:]))  # noqa: E731
+            body_rows = [r for i, r in enumerate(body_rows) if (since and i == 0) or not gone(r)]
             cells = [[P(h, center_b) if i else P(h, bold) for i, h in enumerate(hdr)]] + body_rows
             st = base + [("BACKGROUND", (0, 0), (-1, 0), taupe)]
             if since:
@@ -2610,7 +2625,19 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         cv.drawRightString(landscape(A4)[0] - 10 * mm, 6 * mm, f"{c.get('name') or 'Client'}  |  As on {val_date_str}  |  Page {doc.page}".replace("<", "‹"))
         cv.restoreState()
 
+    lm, rm, tm, bm = (mg.get(k, d) * mm for k, d in (("left", 10), ("right", 10), ("top", 10), ("bottom", 13)))
+    avail = landscape(A4)[0] - lm - rm
+
+    def fit(items: list[Any]) -> None:  # shrink tables that no longer fit between the chosen margins
+        for f in items:
+            if isinstance(f, KeepTogether):
+                fit(f._content)
+            elif isinstance(f, Table) and getattr(f, "_colWidths", None) and sum(f._colWidths) > avail:
+                k = avail / sum(f._colWidths)
+                f._colWidths = [w * k for w in f._colWidths]
+    fit(story)
+
     buf = io.BytesIO()
-    SimpleDocTemplate(buf, pagesize=landscape(A4), leftMargin=10 * mm, rightMargin=10 * mm, topMargin=10 * mm, bottomMargin=13 * mm,
+    SimpleDocTemplate(buf, pagesize=landscape(A4), leftMargin=lm, rightMargin=rm, topMargin=tm, bottomMargin=bm,
                       title=f"Portfolio Valuation Report - {c.get('name') or 'Client'}", author=FIRM).build(story, onFirstPage=decorate_page, onLaterPages=decorate_page)
     return buf.getvalue()

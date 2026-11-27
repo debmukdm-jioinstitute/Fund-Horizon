@@ -399,7 +399,7 @@
   {
    "period": "2026-11",
    "title": "Mirae Asset Mutual Fund factsheet 2026-11",
-   "url": "https://www.miraeassetmf.co.in/docs/default-source/fachsheet/passive-factsheet---november-2026.pdf"
+   "url": "https://www.miraeassetmf.co.in/docs/default-source/fachsheet/active-factsheet---nov-2026.pdf"
   },
   {
    "period": "2026-10",
@@ -2506,6 +2506,11 @@
  ],
  "nj": [
   {
+   "period": "2026-10",
+   "title": "NJ Mutual Fund factsheet 2026-10",
+   "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-Mutual-Fund-Factsheet---October-2026-20261127062500.pdf"
+  },
+  {
    "period": "2026-09",
    "title": "NJ Mutual Fund factsheet 2026-09",
    "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-AMC-Factsheet-September-2026-20261012050816.pdf"
@@ -3577,7 +3582,7 @@
   {
    "period": "2026-10",
    "title": "LIC Mutual Fund factsheet 2026-10",
-   "url": "https://www.licmf.com/assets/downloads/monthly_fact_sheet/2026-2027/11/lic-mf-factsheet-31st-october-2026-546137254.pdf"
+   "url": "https://www.licmf.com/assets/downloads/monthly_fact_sheet/2026-2027/11/lic-mf-factsheet-31st-october-2026-294800677.pdf"
   },
   {
    "period": "2026-09",
@@ -3740,6 +3745,11 @@
   }
  ],
  "franklin": [
+  {
+   "period": "2026-10",
+   "title": "Franklin Templeton Mutual Fund factsheet 2026-10",
+   "url": "https://www.franklintempletonindia.com/download/en-in/fund-factsheets/156ab331-0352-408b-80e6-6bdde7b3c297/Factsheet-as-on-October-30-2026_web.pdf"
+  },
   {
    "period": "2026-09",
    "title": "Franklin Templeton Mutual Fund factsheet 2026-09",

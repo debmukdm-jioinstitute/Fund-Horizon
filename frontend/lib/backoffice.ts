@@ -1438,6 +1438,8 @@ export const FILING_STATUSES = ["Downloaded", "Submitted to RTA", "Ack received"
 export const getFilings = () => boFetch<{ data: Filing[] }>("/api/backoffice/operations/filings").then((r) => r.data);
 export const setFilingStatus = (id: string, status: number) =>
   boFetch<{ data: Filing }>(`/api/backoffice/operations/filings/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify({ status }) });
+export const deleteFiling = (id: string) =>
+  boFetch<{ ok: boolean }>(`/api/backoffice/operations/filings/${encodeURIComponent(id)}`, { method: "DELETE" });
 
 export const getNews = async (opts: { limit?: number; category?: string } = {}): Promise<NewsItem[]> => {
   const q = new URLSearchParams({ limit: String(opts.limit ?? 40) });

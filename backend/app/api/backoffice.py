@@ -3046,6 +3046,17 @@ def backoffice_update_filing(filing_id: str, body: FilingStatusRequest, request:
     return {"data": filing}
 
 
+@router.delete("/operations/filings/{filing_id}")
+def backoffice_delete_filing(filing_id: str, request: Request, staff: Annotated[dict, Depends(require_staff)]):
+    verify_csrf(request)
+    filing = _REPO.get_filing(filing_id)
+    if not filing:
+        raise HTTPException(404, "Filing not found")
+    _REPO.delete_filing(filing_id)
+    _REPO.log_audit(staff["id"], "filing_deleted", "filing", filing_id, {"form_title": filing["form_title"], "client_name": filing.get("client_name"), "folio": filing.get("folio")})
+    return {"ok": True}
+
+
 @router.get("/operations/filings/{filing_id}/pdf")
 def backoffice_filing_pdf(filing_id: str, staff: Annotated[dict, Depends(require_staff)]):
     pdf = _REPO.get_filing_pdf(filing_id)

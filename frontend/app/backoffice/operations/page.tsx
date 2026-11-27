@@ -7,7 +7,7 @@ import UpdatesFeed from "@/components/operations/UpdatesFeed";
 import ClientReport from "@/components/operations/ClientReport";
 import PortfolioReview from "@/components/operations/PortfolioReview";
 import PdfFormFiller, { type ClientDetails, type FillContext, type PdfSource } from "@/components/operations/PdfFormFiller";
-import { FILING_STATUSES, type Filing, getFilings, getOfficialForms, setFilingStatus } from "@/lib/backoffice";
+import { FILING_STATUSES, type Filing, deleteFiling, getFilings, getOfficialForms, setFilingStatus } from "@/lib/backoffice";
 import { fetchHouseholdDetail, fetchHouseholds, type Household, type HouseholdDetail } from "@/lib/crmApi";
 import { getKyc } from "@/lib/crmProductsApi";
 import { AmcLogo } from "@/components/BrandLogo";
@@ -145,6 +145,9 @@ function FormFilling({ initialTab = "updates" }: { initialTab?: Tab }) {
       {tab === "register" && (
         <RegisterTab filings={filings} error={registerError} onMove={async (f) => {
           try { await setFilingStatus(f.id, Math.min(f.status + 1, 2)); say(`“${f.form_title}” → ${FILING_STATUSES[Math.min(f.status + 1, 2)]}. Logged to the client's CRM activity.`); await loadFilings(); } catch (e) { say(e instanceof Error ? e.message : "Could not update the status."); }
+        }} onDelete={async (f) => {
+          if (!window.confirm(`Delete “${f.form_title}”${f.client_name ? ` for ${f.client_name}` : ""} from the register? This cannot be undone.`)) return;
+          try { await deleteFiling(f.id); say(`Deleted “${f.form_title}” from the register.`); await loadFilings(); } catch (e) { say(e instanceof Error ? e.message : "Could not delete the filing."); }
         }} />
       )}
 
@@ -358,7 +361,7 @@ function LibraryTab({ forms, filters, setFilters, fillLabel, fillForm }: {
 }
 
 /* ------------------------------------------------------------------ tab 3 */
-function RegisterTab({ filings, error, onMove }: { filings: Filing[]; error: string | null; onMove: (f: Filing) => void }) {
+function RegisterTab({ filings, error, onMove, onDelete }: { filings: Filing[]; error: string | null; onMove: (f: Filing) => void; onDelete: (f: Filing) => void }) {
   const [mail, setMail] = useState<{ filing: Filing; to: Recipient[] } | null>(null);
   const [mailErr, setMailErr] = useState<string | null>(null);
   const emailFiling = async (f: Filing) => {
@@ -392,6 +395,7 @@ function RegisterTab({ filings, error, onMove }: { filings: Filing[]; error: str
                   <a href={`/api/backoffice/operations/filings/${r.id}/pdf`} download className={`${btn} mr-1.5`}>Re-download</a>
                   <button type="button" className={`${btn} mr-1.5`} disabled={!r.household_id} title={r.household_id ? "Email the filled form to the household" : "This filing is not linked to a household"} onClick={() => emailFiling(r)}>Email client</button>
                   <button type="button" className={btn} disabled={r.status >= 2} onClick={() => onMove(r)}>Update status</button>
+                  <button type="button" className={`${btn} ml-1.5 !text-[#B42318] dark:!text-[#FF7D86]`} onClick={() => onDelete(r)}>Delete</button>
                 </td>
               </tr>
             ))}

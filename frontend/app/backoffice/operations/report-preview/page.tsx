@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { PREVIEW_KEY, call } from "@/components/operations/ClientReport";
+import ExplainViewer from "@/components/operations/ExplainViewer";
 
 // Keys match SECTION_KEYS in backend/app/report/client_report.py; the PDF prints the ticked ones in the order shown here.
 const SECTIONS: [string, string][] = [
@@ -41,6 +42,7 @@ export default function ReportPreview() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const blobUrl = useRef<string | null>(null);
+  const [explainOn, setExplainOn] = useState(false); // hover-to-explain viewer instead of the browser PDF viewer
   const [fmt, setFmt] = useState<Fmt>(FMT0);
   const [past, setPast] = useState<Fmt[]>([]); // undo stack of layout / removed lines / text edits
   const change = (fn: (f: Fmt) => Fmt) => { setPast((p) => [...p.slice(-49), fmt]); setFmt(fn(fmt)); };
@@ -217,7 +219,13 @@ export default function ReportPreview() {
           {err && <p role="alert" className="mb-2 rounded-lg bg-[#FDECEB] px-3 py-2 text-[12.5px] text-[#B42318]">{err}</p>}
           {!picked.size ? <p className="text-[13px]">Tick at least one section.</p> : url ? (
             <>
-              <iframe key={url} title="Consolidated PDF preview" src={url} className="h-[78vh] w-full rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-white" />
+              <div className="mb-2 flex flex-wrap items-center gap-2">
+                <button type="button" aria-pressed={explainOn} className={explainOn ? btnPrimary : btn} onClick={() => setExplainOn((v) => !v)}>
+                  {explainOn ? "Explain on hover: on" : "Explain on hover: off"}
+                </button>
+                <span className="text-[11.5px] text-[#667085] dark:text-[#9AA3B2]">{explainOn ? "Point at or tap any box to see how it is calculated." : "Turn on, then point at any box in the report."}</span>
+              </div>
+              {explainOn ? <ExplainViewer url={url} /> : <iframe key={url} title="Consolidated PDF preview" src={url} className="h-[78vh] w-full rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-white" />}
               <p className="mt-1 text-[11.5px] text-[#667085] dark:text-[#9AA3B2]">Phone or tablet not showing every page? <a className="underline" href={url} target="_blank" rel="noreferrer">Open the full PDF</a>.</p>
             </>
           ) : <p className="text-[13px]">Building preview…</p>}

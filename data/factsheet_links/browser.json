@@ -5105,6 +5105,11 @@
  ],
  "choice": [
   {
+   "period": "2026-10",
+   "title": "Choice Mutual Fund factsheet 2026-10",
+   "url": "https://choicemf.com/api/document/81qhl3J9QS/Choice-Mutual-Fund-Factsheet-Oct-2026.pdf"
+  },
+  {
    "period": "2026-09",
    "title": "Choice Mutual Fund factsheet 2026-09",
    "url": "https://choicemf.com/api/document/s6t5KNhcwo/Choice-Mutual-Fund-Factsheet-Sept-2026.pdf"
@@ -6057,6 +6062,11 @@
   }
  ],
  "quantum": [
+  {
+   "period": "2026-10",
+   "title": "Quantum Mutual Fund factsheet 2026-10",
+   "url": "https://www.quantumamc.com/FileCDN/FactSheet/85cf48e2-ce33-4b90-a887-b89ce36b45f4.pdf"
+  },
   {
    "period": "2026-09",
    "title": "Quantum Mutual Fund factsheet 2026-09",
